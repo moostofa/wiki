@@ -1,4 +1,4 @@
-from logging import error
+from logging import PlaceHolder, error
 
 from django import forms
 from django.http.response import HttpResponse
@@ -8,8 +8,26 @@ from markdown2 import markdown
 from .util import get_entry, list_entries, save_entry
 
 class NewPageForm(forms.Form):
-    title = forms.CharField(label="Title")
-    content = forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":5}))
+    title = forms.CharField(
+        required=True,
+        label= "",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Title",
+                "class": "form-control w-50"
+            }
+            )
+        )
+
+    content = forms.CharField(
+        required=True,
+        label="",
+        widget=forms.Textarea(
+            attrs={
+                "placeholder": "Content",
+                "class": "form-control w-75"
+                })
+        )
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
