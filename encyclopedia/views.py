@@ -38,14 +38,14 @@ def search(request):
     query = request.POST["q"]
     return entry(request, query)
 
+#TODO: create new entry
 def new(request):
-    #TODO: create new entry
-    return
+    return render(request, "encyclopedia/new.html")
 
+#TODO: edit current entries
 def edit(request):
-    #TODO: edit current entries
     return
 
+#TODO: direct user to random wiki entry
 def random(request):
-    #TODO: direct user to random wiki entry
     return
