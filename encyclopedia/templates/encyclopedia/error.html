@@ -5,5 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Encyclopedia does not exist</h1>
+    <h1> {{ message }}</h1>
+    {% if substrings|length > 0 %}
+        <h3>Did you mean:</h3>
+        <ul>
+            {% for str in substrings %}
+                <li><a href="wiki/{{ str }}">{{ str }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
