@@ -1,26 +1,30 @@
 from logging import error
+
+from django import forms
 from django.http.response import HttpResponse
 from django.shortcuts import render
-from django import forms
-
 from markdown2 import markdown
 
-from .util import list_entries, save_entry, get_entry
+from .util import get_entry, list_entries, save_entry
+
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": list_entries()
     })
 
+#return a wiki entry passed as a parameter if it exists
 def entry(request, entry):
-    #return the wiki entry passed as parameter if it exists
+    #get a list of all the current wiki pages available
+    entries = [s for s in list_entries()]
 
     #check if wiki entry exists
-    entries = [element.upper() for element in list_entries()]
-    if entry.upper() not in entries:
+    #canonicalise search string and list entries using .upper()
+    if entry.upper() not in map(str.upper, entries):
         return render(request,"encyclopedia/error.html", {
-            "message": "Wiki page for the chosen entry does not exist"
-        })
+            "message": "Wiki page for the chosen entry does not exist",
+            "substrings": [s for s in entries if entry.upper() in s.upper()]    
+        })  #additionally, search query might be a substring of any of the entries
 
     #render the remplate and pass in the markdown text
     return render(request, "encyclopedia/entry.html", {
@@ -28,15 +32,11 @@ def entry(request, entry):
         "entry": markdown(get_entry(entry))
     })    
 
-#TODO: search entry
+#allow user to search for a wiki page
 def search(request):
-    if request.method == "POST":
-        q = request.POST["q"]
-        return entry(request, q)
-    else:
-        return render(request, "encyclopedia/error.html", {
-            "message": "Something went wrong, search form should not have method of GET"
-        })
+    #let entry() method handle the work
+    query = request.POST["q"]
+    return entry(request, query)
 
 def new(request):
     #TODO: create new entry
