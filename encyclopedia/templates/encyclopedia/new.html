@@ -6,7 +6,10 @@
 
 {% block body %}
     <h1>New page</h1>
-    {% csrf_token %}
-    {{ form }}
-    <button id="submit">Submit</button>
+    <form action="{% url 'new' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
+    
 {% endblock %}

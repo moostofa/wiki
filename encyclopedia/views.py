@@ -8,6 +8,7 @@ from markdown2 import markdown
 from .util import get_entry, list_entries, save_entry
 
 class NewPageForm(forms.Form):
+    #title field is normal text input
     title = forms.CharField(
         required=True,
         label= "",
@@ -19,6 +20,7 @@ class NewPageForm(forms.Form):
             )
         )
 
+    #content field is a large text box
     content = forms.CharField(
         required=True,
         label="",
@@ -61,9 +63,19 @@ def search(request):
 
 #TODO: create new entry
 def new(request):
-    return render(request, "encyclopedia/new.html", {
-        "form": NewPageForm()
-    })
+    #display page
+    if request.method == "GET":
+        return render(request, "encyclopedia/new.html", {
+            "form": NewPageForm()
+        })
+    else:   #else user submitted form via POST
+        form = NewPageForm(request.POST)
+        if form.is_valid():
+            return HttpResponse(f"title = {form.cleaned_data['title']}, content = {form.cleaned_data['content']}")
+        else:
+            return render(request, "tasks/add.html", {
+                "form": form
+            })
 
 #TODO: edit current entries
 def edit(request):
