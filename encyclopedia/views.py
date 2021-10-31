@@ -24,3 +24,19 @@ def entry(request, entry):
         "title": entry,
         "entry": markdown(get_entry(entry))
     })    
+
+def search(request):
+    #TODO: search entry
+    return
+
+def new(request):
+    #TODO: create new entry
+    return
+
+def edit(request):
+    #TODO: edit current entries
+    return
+
+def random(request):
+    #TODO: direct user to random wiki entry
+    return
