@@ -93,8 +93,11 @@ def new(request):
         return HttpResponseRedirect(reverse("index"))
 
 #TODO: edit current entries
-def edit(request):
-    return
+def edit(request, entry):
+    return render(request, "encyclopedia/edit.html", {
+        "title": entry,
+        "entry": markdown(get_entry(entry))
+    })  
 
 #TODO: direct user to random wiki entry
 def random(request):
