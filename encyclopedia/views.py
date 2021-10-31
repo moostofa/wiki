@@ -7,6 +7,9 @@ from markdown2 import markdown
 
 from .util import get_entry, list_entries, save_entry
 
+class NewPageForm(forms.Form):
+    title = forms.CharField(label="Title")
+    content = forms.CharField(widget=forms.Textarea(attrs={"rows":5, "cols":5}))
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -40,7 +43,9 @@ def search(request):
 
 #TODO: create new entry
 def new(request):
-    return render(request, "encyclopedia/new.html")
+    return render(request, "encyclopedia/new.html", {
+        "form": NewPageForm()
+    })
 
 #TODO: edit current entries
 def edit(request):
