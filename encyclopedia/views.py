@@ -1,12 +1,11 @@
-from logging import PlaceHolder, error
-
 from django import forms
-from django.urls import reverse
 from django.http.response import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import render
+from django.urls import reverse
 from markdown2 import markdown
 
 from .util import get_entry, list_entries, save_entry
+
 
 #django form
 class NewPageForm(forms.Form):
@@ -40,16 +39,14 @@ def index(request):
 
 #return a wiki entry passed as a parameter if it exists
 def entry(request, entry):
-    #get a list of all the current wiki pages available
-    entries = list_entries()
-
     #check if wiki entry exists
     #canonicalise search string and list entries using .upper()
-    if entry.upper() not in map(str.upper, entries):
+    if entry.upper() not in map(str.upper, list_entries()):
         return render(request,"encyclopedia/error.html", {
             "message": "Wiki page for the chosen entry does not exist",
-            "substrings": [s for s in entries if entry.upper() in s.upper()]    
-        })  #additionally, search query might be a substring of any of the entries
+            "substrings": [s for s in list_entries() if entry.upper() in s.upper()]    
+        })  
+        #additionally, search query might be a substring of any of the entries (this is checked in template via Jinja)
 
     #render the remplate and pass in the markdown text
     return render(request, "encyclopedia/entry.html", {
@@ -63,14 +60,16 @@ def search(request):
     query = request.POST["q"]
     return entry(request, query)
 
-#TODO: create new entry
+#allow user to create new entry
 def new(request):
     #display page
     if request.method == "GET":
         return render(request, "encyclopedia/new.html", {
             "form": NewPageForm()
         })
-    else:   #else user submitted form via POST
+    #else user submitted form via POST
+    else:   
+        #get POST data
         form = NewPageForm(request.POST)
 
         #if form is invalid, re-render the page with existing info
@@ -83,10 +82,9 @@ def new(request):
         title = form.cleaned_data['title']
         markdown = form.cleaned_data['markdown']
 
-        #check if wiki entry already exists
-        entries = list_entries()
-        if title in entries:
-            return render(request, "encyclopedia/new.html", {
+        #check if wiki entry already exists, if it does, return an error message
+        if title.upper() in map(str.upper, list_entries()):
+            return render(request, "encyclopedia/error.html", {
                 "message": "Wiki entry for this topic already exists"
             })
         
