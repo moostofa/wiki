@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import Textarea
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -8,7 +9,7 @@ from .util import get_entry, list_entries, save_entry
 
 
 #django form
-class NewPageForm(forms.Form):
+class EntryForm(forms.Form):
     #title field is normal text input
     title = forms.CharField(
         required=True,
@@ -65,12 +66,12 @@ def new(request):
     #display page
     if request.method == "GET":
         return render(request, "encyclopedia/new.html", {
-            "form": NewPageForm()
+            "form": EntryForm()
         })
     #else user submitted form via POST
     else:   
         #get POST data
-        form = NewPageForm(request.POST)
+        form = EntryForm(request.POST)
 
         #if form is invalid, re-render the page with existing info
         if not form.is_valid():
@@ -95,14 +96,24 @@ def new(request):
 #TODO: edit current entries
 def edit(request, entry):
     if request.method == "GET":
-        form = NewPageForm(initial={
+        form = EntryForm(initial={
             "title": entry,
             "markdown": get_entry(entry)
-        })
+            }
+        )
         return render(request, "encyclopedia/edit.html", {
             "title": entry,
             "form": form
         })  
+    else:
+        form = EntryForm(request.POST)
+        if not form.is_valid():
+            return render(request, "encyclopedia/new.html", {
+                "form": form
+            })
+        title = form.cleaned_data["title"]
+        markdown = form.cleaned_data["markdown"]
+        return HttpResponse(f"title = {title}, markdown = {markdown}")
 
 #TODO: direct user to random wiki entry
 def random(request):
