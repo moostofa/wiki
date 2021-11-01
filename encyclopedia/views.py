@@ -94,10 +94,15 @@ def new(request):
 
 #TODO: edit current entries
 def edit(request, entry):
-    return render(request, "encyclopedia/edit.html", {
-        "title": entry,
-        "entry": markdown(get_entry(entry))
-    })  
+    if request.method == "GET":
+        form = NewPageForm(initial={
+            "title": entry,
+            "markdown": get_entry(entry)
+        })
+        return render(request, "encyclopedia/edit.html", {
+            "title": entry,
+            "form": form
+        })  
 
 #TODO: direct user to random wiki entry
 def random(request):
