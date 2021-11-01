@@ -3,6 +3,7 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from markdown2 import markdown
+from random import choice
 
 from .util import get_entry, list_entries, save_entry
 
@@ -133,4 +134,4 @@ def edit(request, entry):
 
 #TODO: direct user to random wiki entry
 def random(request):
-    return
+    return HttpResponseRedirect(reverse("entry", args=[choice(list_entries())]))

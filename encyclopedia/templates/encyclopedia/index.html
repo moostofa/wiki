@@ -6,11 +6,21 @@
 
 {% block body %}
     <h1>All Pages</h1>
-
-    <ul>
-        {% for entry in entries %}
-            <li><a href="wiki/{{ entry }}">{{ entry }}</a> <a href="edit/{{ entry }}">Edit</a></li>
-        {% endfor %}
-    </ul>
+    <div>
+        <ul>
+            {% for entry in entries %}
+                <li class="list-group-item list-group-item-light w-25">
+                    <a href="wiki/{{ entry }}">
+                        {{ entry }}
+                    </a> 
+                    <button class="btn-link">
+                        <a href="edit/{{ entry }}">
+                            Edit
+                        </a>
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 
 {% endblock %}

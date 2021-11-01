@@ -23,7 +23,10 @@
                     <a href="{% url 'new' %}">Create New Page</a>
                 </div>
                 <div>
-                    Random Page
+                    <form action="{% url 'random' %}" method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Random Page">
+                    </form>
                 </div>
                 {% block nav %}
                 {% endblock %}
