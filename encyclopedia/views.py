@@ -1,5 +1,4 @@
 from django import forms
-from django.forms.widgets import Textarea
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -93,27 +92,44 @@ def new(request):
         save_entry(title, markdown)
         return HttpResponseRedirect(reverse("index"))
 
-#TODO: edit current entries
+#allow user to edit a chosen wiki page
 def edit(request, entry):
+    #GET request: display editing page
     if request.method == "GET":
+        #retreive markdown content for the entry chosen to edit 
         form = EntryForm(initial={
             "title": entry,
             "markdown": get_entry(entry)
             }
         )
+
+        #pass markdown content into template
         return render(request, "encyclopedia/edit.html", {
             "title": entry,
             "form": form
-        })  
+        }) 
+    #else, user submitted form via POST
     else:
+        #validate form pubmission 
         form = EntryForm(request.POST)
         if not form.is_valid():
             return render(request, "encyclopedia/new.html", {
                 "form": form
             })
+        
+        #retreive form fields
         title = form.cleaned_data["title"]
         markdown = form.cleaned_data["markdown"]
-        return HttpResponse(f"title = {title}, markdown = {markdown}")
+
+        #check if user inspected element and tried to "hack"
+        if title.upper() not in map(str.upper, list_entries()):
+            return render(request, "encyclopedia/error.html", {
+                "message": "The wiki page you have chosen to edit does not exist. Hmm... Did you inspect element and try to 'hack' this page? :)"
+            })
+
+        #save entry and redirect user to the wiki page of the entry they edited
+        save_entry(title, markdown)
+        return HttpResponseRedirect(reverse("entry", args=[title]))
 
 #TODO: direct user to random wiki entry
 def random(request):
