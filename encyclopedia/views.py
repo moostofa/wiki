@@ -1,9 +1,10 @@
+from random import choice
+
 from django import forms
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from markdown2 import markdown
-from random import choice
 
 from .util import get_entry, list_entries, save_entry
 
@@ -132,6 +133,7 @@ def edit(request, entry):
         save_entry(title, markdown)
         return HttpResponseRedirect(reverse("entry", args=[title]))
 
-#TODO: direct user to random wiki entry
+#redirect user to random wiki entry
 def random(request):
+    #random.choice function returns a random element from a list
     return HttpResponseRedirect(reverse("entry", args=[choice(list_entries())]))
