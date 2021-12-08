@@ -1,9 +1,9 @@
-# CS50 Web | Project 1
+# Wiki
 A Django web application which serves as a Wikipedia-like online encyclopedia, with functionalities such as searching, creating, and editing entries.
 
 Each entry is written and stored as a markdown file in the /entries directory.
 
-This is project 1 of the online course [CS50 Web](https://cs50.harvard.edu/web/2020/)
+This is project 1 of the online course [CS50 Web](https://cs50.harvard.edu/web/2020/).
 
 # Project goals
 - Learning Django
